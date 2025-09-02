@@ -1,0 +1,56 @@
+/* template */
+.disabled {
+    display: none;
+}
+
+/*  */
+#menu {
+    max-width: 1000px;
+    max-height: 600px;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+img {
+    width: 100px;
+}
+
+.kecil {
+    width: 50px;
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.gun-container {
+    display: flex;
+}
+
+.target-container {
+    display: flex;
+}
+
+.instruction {
+    background-color: black;
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+.closeBTN {
+    background-color: red;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 5px;   
+}
+
+#canvas {
+    background: url("sprites/background.jpg");
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Shooter</title>
+</head>
+<body>
+    <div class="canvas">
+        <canvas id="canvas"></canvas>
+    </div>  
+    
+    <div id="menu">
+        <div class="menu-container">
+            <img src="sprites/shooter.png" alt="shooterLogo" id="shooterLogo">
+
+            <input type="text" placeholder="Input Username" id="username">
+
+            <select id="level">
+                <option value="1" selected>Easy</option>
+                <option value="2">Medium</option>
+                <option value="3">Hard</option>
+            </select>
+            
+            <div class="gun-container">
+                <div class="gun">
+                    <input type="radio" value="gun1" name="gun" id="gun1">
+                    <label for="gun1">
+                        <img src="sprites/gun1.png" alt="" class="kecil">
+                    </label>
+                </div>
+            <div class="gun">
+                    <input type="radio" value="gun2" name="gun" id="gun2">
+                    <label for="gun2">
+                        <img src="sprites/gun2.png" alt="" class="kecil">
+                    </label>
+                </div>
+            </div>
+
+            <div class="target-container">
+                <div class="target">
+                    <input type="radio" value="target1" id="target1" name="target">
+                    <label for="target1"><img src="sprites/target1.png" alt="" class="kecil"></label>
+                </div>
+                <div class="target">
+                    <input type="radio" value="target2" id="target2" name="target">
+                    <label for="target2"><img src="sprites/target2.png" alt="" class="kecil"></label>
+                </div>
+                <div class="target">
+                    <input type="radio" value="target3" id="target3" name="target">
+                    <label for="target3"><img src="sprites/target3.png" alt="" class="kecil"></label>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button>Play Game</button>
+                <button>Instruction</button>
+            </div>
+        </div>
+
+        <div class="instruction">
+            <div class="closeBTN">X</div>
+            <p class="insTittle">how To Play The Game</p>
+            <ol>
+                <li>Input Username</li>
+                <li>Point the pointer at the target</li>
+                <li>click to shoot</li>
+                <li>get as many point as possible</li>
+                <li>enjoy!</li>
+            </ol>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
