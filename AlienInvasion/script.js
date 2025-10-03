@@ -11,6 +11,7 @@ let level = ""
 let canvasWidth = 1000
 let canvasHeight = 600
 let canvasBackgroundColor = "grey"
+let gameStart = true
 //  player
 let playerWidth = 150
 let playerHeight = 150
@@ -36,8 +37,8 @@ let playerHPHeight = 25
 let alienWidth = 300
 let alienHeight = 200
 let alienX = alienWidth
-let alienY = alienHeight
-let alienSpeed = 10
+let alienY = 25
+let alienSpeed = 15
 let alienImage = new Image()
 alienImage.src = "./assets/Enemies/Alien/Alien-CHILL.png"
 //  alienBullet
@@ -47,9 +48,27 @@ let alienBulletX = 0
 let alienBulletY = 0
 let alienBulletSpeed = 10
 let alienBulletFrequency = 2000
-let alienBulletquantity = 2
+let alienBulletquantity = 4
 let alienBulletImage = new Image()
 alienBulletImage.src = "./assets/Enemies/Alien/Alien-Missile.png"
+// playerBullet
+let playerBulletWidth = 50
+let playerBulletHeight = 10
+let playerBulletSpeed = 50
+let playerBulletLeft = new Image()
+let playerBulletRight = new Image()
+let playerBulletUp = new Image()
+playerBulletLeft.src = "./assets/Bullet/Bullet-left-normal.png"
+playerBulletRight.src = "./assets/Bullet/Bullet-right-normal.png"
+playerBulletUp.src = "./assets/Bullet/Bullet.png"
+// PlayerAmmo
+let playerAmmoWidth = 20
+let playerAmmoHeight = 50
+// Background
+let background = new Image()
+let road = new Image()
+background.src = "./assets/Background/Theme1/Theme-1-BG.png"
+road.src = "./assets/Background/Theme1/Theme-1-Road.png"
 
 //============[CLASS]==============
 class defaultObject {
@@ -63,7 +82,7 @@ class defaultObject {
 }
 
 class Gameboard {
-    constructor(width, height, canvas, context, backgroundColor, player, alien, alienBullet, ) {
+    constructor(width, height, canvas, context, backgroundColor, player, alien, alienBullet, gameStart, playerBullet, playerAmmo, background, road) {
         this.width = width
         this.height = height
         this.canvas = canvas
@@ -72,10 +91,17 @@ class Gameboard {
         this.player = player
         this.alien = alien
         this.alienBullet = alienBullet
+        this.playerBullet = playerBullet
         this.alienBulletContainer = []
+        this.playerBulletContainer = []
         this.lastKeyPress = "a"
         this.isKeyPressed = false
+        this.gameStart = gameStart
+        this.gameWin = false
+        this.playerAmmo = playerAmmo
         this.initialize()
+        this.background = background
+        this.road = road
     }
     // ==[init]==
     initialize() {
@@ -85,6 +111,7 @@ class Gameboard {
         this.async1()
         this.async2()
         this.async3()
+        console.log(this.background)
     }
 
     // ==[asynchronous]==
@@ -94,26 +121,44 @@ class Gameboard {
 
     async2() {
         setTimeout(() => {this.addBullet(); this.async2()}, this.alienBullet.frequency)
-    }  // >>AKU BERHENTI DISINI, MASUKKIN BULLET KE ARRAY NYA SUDAH DAN KURANG GERAKIN BULLET DAN RENDER BULLET<<
+    }
 
     async3() {
         setTimeout(() => {this.setBullet(); this.async3()}, 50)
+    }
+
+    // Usable Function
+    isCollided(obj1, obj2) {
+        // console.log(obj1.y, (obj2.y + obj2.height), obj1.x, obj2.x, obj1.x, (obj2.x + obj2.width))
+        if( obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x &&obj1.y < obj2.y + obj2.height &&obj1.y + obj1.height > obj2.y  ) {
+            return true
+        } else {
+            return false
+        }
     }
 
     // ==[EventListener]==
     eventListener() {
         addEventListener("keydown", (e) => {
             this.isKeyPressed = true
-            if(e.key === "w") this.setPlayer("w")
-            if(e.key === "a") this.setPlayer("a")
-            if(e.key === "s") this.setPlayer("s")
-            if(e.key === "d") this.setPlayer("d")
-            if(e.key === " ") console.log("shoot")
+            if(e.key === "w") {this.setPlayer("w"); this.lastKeyPress = "w"}
+            if(e.key === "a") {this.setPlayer("a"); this.lastKeyPress = "a"}
+            if(e.key === "s") {this.setPlayer("s"); this.lastKeyPress = "s"}
+            if(e.key === "d") {this.setPlayer("d"); this.lastKeyPress = "d"}
+            if(e.key === " ") this.ammoCheck(this.lastKeyPress)
+            if(e.key === "r") this.ammoReload()
         })
 
         addEventListener("keyup", () => {
             this.isKeyPressed = false
         })
+    }
+
+    // ==[Global Constraint]==
+    ammoCheck(key) {
+        if(this.playerAmmo.ammo > 0) {
+            this.addBulletPlayer(key)
+        }
     }
 
     // ==[player]==
@@ -162,7 +207,6 @@ class Gameboard {
     }
 
     movePlayerDown() {
-        console.log(this.player.y + this.player.height, this.height)
         if ((this.player.y + this.player.height) < this.height) {
             this.player.y += this.player.speed;
         }
@@ -172,20 +216,13 @@ class Gameboard {
     drawPlayer() {
         this.context.drawImage(this.player.mainImage, this.player.x, this.player.y, this.player.width, this.player.height)
     }
-
-    drawHealthPlayer() {
-        this.context.fillStyle= "black"
-        this.context.strokeRect(10, 10, this.player.HPWidth, this.player.HPHeight)
-        this.context.stroke()
-        
-    }
     
     // ==[alien]==
     checkBoundAlien() {
         // console.log(`condition 1: ${this.width} | ${this.alien.x + this.alien.width}`)
         // console.log(`condition 2: ${0} | ${ this.alien.x}`)
-        if(this.width < this.alien.x + this.alien.width) {this.alien.invert = true; console.log("true")}
-        if(0 > this.alien.x) {this.alien.invert = false; console.log("false")}
+        if(this.width < this.alien.x + this.alien.width) {this.alien.invert = true}
+        if(0 > this.alien.x) {this.alien.invert = false}
         this.setAlien()
     }
 
@@ -220,9 +257,133 @@ class Gameboard {
         })
     }
 
+    // ==[Player Bullet]==
+    addBulletPlayer(direction) {
+        if(!this.playerAmmo.isReloading) {
+            this.playerAmmo.ammo -= 1
+            if (direction === "w") this.playerBulletContainer.push(new PlayerBullet(this.player.x, this.player.y, this.playerBullet.height, this.playerBullet.width, this.playerBullet.imageLeft, this.playerBullet.imageRight, this.playerBullet.imageUp, this.playerBullet.speed, this.playerBullet.imageUp, "up"))
+            if (direction === "a") this.playerBulletContainer.push(new PlayerBullet(this.player.x, this.player.y, this.playerBullet.width, this.playerBullet.height, this.playerBullet.imageLeft, this.playerBullet.imageRight, this.playerBullet.imageUp, this.playerBullet.speed, this.playerBullet.imageLeft, "left"))
+            if (direction === "d") this.playerBulletContainer.push(new PlayerBullet(this.player.x, this.player.y, this.playerBullet.width, this.playerBullet.height, this.playerBullet.imageLeft, this.playerBullet.imageRight, this.playerBullet.imageUp, this.playerBullet.speed, this.playerBullet.imageRight, "right"))
+        }
+    }
+
+    setBulletPlayer() {
+        this.playerBulletContainer.forEach(bullet => {
+            if(bullet.direction === "up") bullet.y -= bullet.speed
+            if(bullet.direction === "left") bullet.x -= bullet.speed
+            if(bullet.direction === "right") bullet.x += bullet.speed                    
+        })
+    }
+
+    drawBulletPlayer() {
+        this.playerBulletContainer.forEach(bullet => {
+            this.context.drawImage(bullet.mainImage, bullet.x, bullet.y, bullet.width, bullet.height)
+        })
+    }
+
+    // ==[Player Ammo]==
+    drawPlayerAmmo() {
+        for(let i = 0; i < this.playerAmmo.ammo; i++) {
+            this.context.drawImage(this.playerAmmo.image, ((20 * i) + 10), 50, this.playerAmmo.width, this.playerAmmo.height)
+        }
+    }
+
+    ammoReload() {
+        console.log(this.playerAmmo.isReloading)
+        this.playerAmmo.isReloading = true
+        setTimeout(() => {
+            this.playerAmmo.ammo = this.playerAmmo.maximum
+            this.playerAmmo.isReloading = false
+        }, this.playerAmmo.reloadTime);
+    }
+
+    // ==[Health Bar]==
+    drawHealthPlayer() {
+        // outline
+        this.context.fillStyle = "black"
+        this.context.strokeRect(10, 10, this.player.HPWidth, this.player.HPHeight)
+        this.context.stroke()
+        
+        this.context.fillStyle = "red"
+        this.context.fillRect(10, 10, (this.player.health / 100 * this.player.HPWidth), this.player.HPHeight)
+        this.context.stroke()
+    }
+
+    setHealthPlayer() {
+    for (let i = this.alienBulletContainer.length - 1; i >= 0; i--) {
+            const bullet = this.alienBulletContainer[i];
+            const check = this.isCollided(this.player, bullet);
+            if (check) {
+                this.alienBulletContainer.splice(i, 1);
+                this.player.health -= 10;
+            }
+        }
+    }
+
+    checkHealthPlayer() {
+        if(this.player.health <= 0) {
+            this.gameStart = false
+        }
+    }
+
+    drawHealthAlien() {
+        // outline
+        this.context.fillStyle = "black"
+        this.context.strokeRect(((this.width - this.alien.HPWidth) - 10), 10, this.alien.HPWidth, this.alien.HPHeight)
+        this.context.stroke()
+        
+        this.context.fillStyle = "blue"
+        this.context.fillRect(((this.width - this.alien.HPWidth) - 10), 10, (this.alien.health / 100 * this.alien.HPWidth), this.alien.HPHeight)
+        this.context.stroke()
+    }
+
+    setHealthAlien() {
+    for (let i = this.playerBulletContainer.length - 1; i >= 0; i--) {
+            const bullet = this.playerBulletContainer[i];
+            const check = this.isCollided(this.alien, bullet);
+            if (check) {
+                this.playerBulletContainer.splice(i, 1);
+                this.alien.health -= 1;
+            }
+        }
+    }
+
+    checkHealthAlien() {
+        if(this.alien.health <= 0) {
+            this.gameWin = true
+        }
+    }
+
+    // ==[Game State]==
+    drawGameOver() {
+        this.context.fillStyle = "red"
+        this.context.fillRect(0, 0, this.width, this.height)
+        this.context.stroke()
+
+        this.context.fillStyle = "black"
+        this.context.strokeRect(10, 10, this.player.HPWidth, this.player.HPHeight)
+        this.context.stroke()
+
+        this.context.font = "40px sans-serif"
+        this.context.fillText("Wasted", (this.width / 2 - 50), (this.height / 2))
+    }
+
+    drawGameComplete() {
+        this.context.fillStyle = "green"
+        this.context.fillRect(0, 0, this.width, this.height)
+        this.context.stroke()
+
+        this.context.fillStyle = "black"
+        this.context.strokeRect(((this.width - this.alien.HPWidth) - 10), 10, this.alien.HPWidth, this.alien.HPHeight)
+        this.context.stroke()
+
+        this.context.font = "40px sans-serif"
+        this.context.fillText("You Win", (this.width / 2 - 50), (this.height / 2))
+    }
     
     // ==[render]==
     setCanvas() {
+        console.log(this.background)
         this.canvas.width = this.width
         this.canvas.height = this.height
         this.canvas.style.background = this.backgroundColor
@@ -238,6 +399,24 @@ class Gameboard {
         this.drawPlayer()
         this.drawBulletAlien()
         this.drawHealthPlayer()
+        this.setHealthPlayer()
+        this.setBulletPlayer()
+        this.drawBulletPlayer()
+        this.drawHealthAlien()
+        this.setHealthAlien()
+        this.checkHealthAlien()
+        this.drawPlayerAmmo()
+        if (this.gameWin) {
+            this.drawGameComplete()
+        }
+
+        // Set UI
+        if(this.gameStart) {
+            this.checkHealthPlayer()
+        } else {
+            this.drawGameOver()
+        }
+
         requestAnimationFrame(this.render.bind(this))
     }
 }
@@ -251,6 +430,9 @@ class Alien {
         this.image = image
         this.speed = speed
         this.invert = false
+        this.health = 100
+        this.HPHeight = 50
+        this.HPWidth = 400
     }
 }
 
@@ -274,15 +456,34 @@ class Player {
     }
 }
 
-class Tank extends defaultObject {}
-
-class PlayerBullet {
+class PlayerAmmo {
     constructor(x, y, width, height, image) {
         this.x = x
         this.y = y
         this.width = width
         this.height = height
-        this.image = image
+        this.image = image // default for first launch
+        this.maximum = 10
+        this.ammo = 10
+        this.reloadTime = 3000 // milisecond
+        this.isReloading = false
+    }
+}
+
+class Tank extends defaultObject {}
+
+class PlayerBullet {
+    constructor(x, y, width, height, imageLeft, imageRight, imageUp, speed, mainImage, direction) {
+        this.x = x // default value
+        this.y = y // default value
+        this.width = width
+        this.height = height
+        this.imageLeft = imageLeft
+        this.imageRight = imageRight
+        this.imageUp = imageUp
+        this.speed = speed
+        this.direction = direction // default value
+        this.mainImage = mainImage
     }
 }
 
@@ -303,7 +504,9 @@ class AlienBullet {
 const player = new Player(playerX, playerY, playerWidth, playerHeight, playerImageKanan, playerImageKiri, playerImageKanan2, playerImageKiri2, playerImageAtas, playerImageBawah, playerSpeed)
 const alien = new Alien(alienX, alienY, alienWidth, alienHeight, alienImage, alienSpeed)
 const alienBullet = new AlienBullet(alienBulletX, alienBulletY, alienBulletWidth, alienBulletHeight, alienBulletImage, alienBulletSpeed, alienBulletFrequency, alienBulletquantity)
-const gameboard = new Gameboard(canvasWidth, canvasHeight, canvas, context, canvasBackgroundColor, player, alien, alienBullet)
+const playerBullet = new PlayerBullet(0, 0, playerBulletWidth, playerBulletHeight, playerBulletLeft, playerBulletRight, playerBulletUp, playerBulletSpeed, "", "left")
+const playerAmmo = new PlayerAmmo(0, 0, playerAmmoWidth, playerAmmoHeight, playerBulletUp)
+const gameboard = new Gameboard(canvasWidth, canvasHeight, canvas, context, canvasBackgroundColor, player, alien, alienBullet, gameStart, playerBullet, playerAmmo, background, road)
 
 //==========[Global: Event Listener]================
 start.addEventListener('click', () => {getUserData(); })
