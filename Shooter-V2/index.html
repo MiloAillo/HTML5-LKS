@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shooter-V2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="content">
+        <section class="main-menu" id="main-menu">
+            <img class="shooter-logo" src="./sprites/shooter.png" alt="shooter-logo">
+            <input id="username" type="text" placeholder="Input Username">
+            <select name="level" id="level">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <div class="guns-selection">
+                <div class="selection">
+                    <input type="radio" name="gun" value="gun1">
+                    <img src="./sprites/gun1.png" alt="gun-1">
+                </div>
+                <div class="selection">
+                    <input type="radio" name="gun" value="gun2">
+                    <img src="./sprites/gun2.png" alt="gun-2">
+                </div>
+            </div>
+            <div class="targets-selection">
+                <div class="selection">
+                    <input type="radio" name="target" value="target1">
+                    <img src="./sprites/target1.png" alt="target-1">
+                </div>
+                <div class="selection">
+                    <input type="radio" name="target" value="target2">
+                    <img src="./sprites/target2.png" alt="target-2">
+                </div>
+                <div class="selection">
+                    <input type="radio" name="target" value="target3">
+                    <img src="./sprites/target3.png" alt="target-3">
+                </div>
+            </div>
+            <div id="buttons-container">
+                <button id="play-button">Play Game</button>
+                <button id="instruction-button">Instruction</button>
+            </div>
+        </section>
+    
+        <section id="instruction" class="instruction">
+            <div class="text-container">
+                <p>How to play game</p>
+                <ol>
+                    <li>Input Username</li>
+                    <li>Point the pointer at the target</li>
+                    <li>Click to shoot</li>
+                    <li>Get as many points as possible</li>
+                    <li>Enjoy!</li>
+                </ol>
+            </div>
+            <div class="close-container">
+                <button>X</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="communicator.js" type="module"></script>
+</body>
+</html>
