@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="content">
+    <div class="content" id="content">
         <section class="main-menu" id="main-menu">
             <img class="shooter-logo" src="./sprites/shooter.png" alt="shooter-logo">
             <input id="username" type="text" placeholder="Input Username">
@@ -18,7 +18,7 @@
             </select>
             <div class="guns-selection">
                 <div class="selection">
-                    <input type="radio" name="gun" value="gun1">
+                    <input type="radio" name="gun" value="gun1" checked>
                     <img src="./sprites/gun1.png" alt="gun-1">
                 </div>
                 <div class="selection">
@@ -28,7 +28,7 @@
             </div>
             <div class="targets-selection">
                 <div class="selection">
-                    <input type="radio" name="target" value="target1">
+                    <input type="radio" name="target" value="target1" checked>
                     <img src="./sprites/target1.png" alt="target-1">
                 </div>
                 <div class="selection">
@@ -62,6 +62,8 @@
             </div>
         </section>
     </div>
+    
+    <canvas id="canvas"></canvas>
 
     <script src="communicator.js" type="module"></script>
 </body>

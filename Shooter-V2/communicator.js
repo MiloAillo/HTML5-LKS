@@ -8,6 +8,10 @@ const playButton = document.getElementById("play-button")
 
 const mainMenu = document.getElementById("main-menu")
 const instruction = document.getElementById("instruction")
+const content = document.getElementById("content")
+
+const canvas = document.getElementById("canvas")
+const ctx = canvas.getContext("2d")
 
 const gun1 = new Image()
 gun1.src = "./sprites/gun1.png"
@@ -39,9 +43,12 @@ export const switchMenu = (state) => {
     if (state === true) {
         mainMenu.style.display = "flex"
         instruction.style.display = "flex"
+        content.style.display = "flex"
+
     }
 
     if (state === false) {
+        content.style.display = "none"
         mainMenu.style.display = "none"
         instruction.style.display = "none"
     }
@@ -65,8 +72,8 @@ playButton.addEventListener("click", () => {
         }
     }
 
-    if (username.value != "" || selectedGun != undefined || selectedTarget != undefined) {
-        gameStart(username.value, difficulty.value, selectedGun, selectedTarget)
+    if (username.value !== "" || selectedGun != undefined || selectedTarget != undefined) {
+        gameStart(username.value, difficulty.value, selectedGun, selectedTarget, canvas, ctx)
         switchMenu(false)
     }
 })
