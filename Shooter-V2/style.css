@@ -84,7 +84,7 @@ img {
 }
 
 .instruction {
-    display: flex;
+    /* display: flex; */
     flex-direction: row;
     justify-content: space-between;
     background-color: rgba(154, 99, 9, 0.544);

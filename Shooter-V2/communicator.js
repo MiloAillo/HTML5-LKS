@@ -5,9 +5,11 @@ const difficulty = document.getElementById("level")
 const guns = document.getElementsByName("gun")
 const targets = document.getElementsByName("target")
 const playButton = document.getElementById("play-button")
+const instructionButton = document.getElementById("instruction-button")
 
 const mainMenu = document.getElementById("main-menu")
 const instruction = document.getElementById("instruction")
+instruction.style.display = "flex"
 const content = document.getElementById("content")
 
 const canvas = document.getElementById("canvas")
@@ -44,15 +46,24 @@ export const switchMenu = (state) => {
         mainMenu.style.display = "flex"
         instruction.style.display = "flex"
         content.style.display = "flex"
-
+        canvas.style.display = "none"
     }
 
     if (state === false) {
         content.style.display = "none"
         mainMenu.style.display = "none"
         instruction.style.display = "none"
+        canvas.style.display = "block"
     }
-} 
+}
+
+instructionButton.addEventListener("click", () => {
+    const display = instruction.style
+    console.log(display)
+
+    if(display == "none") instruction.style.display = "flex"
+    if(display == "flex") instruction.style.display = "none"
+})
 
 playButton.addEventListener("click", () => {
     let selectedGun = null
@@ -77,3 +88,4 @@ playButton.addEventListener("click", () => {
         switchMenu(false)
     }
 })
+

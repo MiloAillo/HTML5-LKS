@@ -7,3 +7,5 @@ Di Shooter banyak yang kurang seperti menu belum di sambungkan dengan gameboard 
 <br>
 
 (No AI Aseli)
+
+note: mas ini akunnya masih nyangkut di pc sekolah, mau push ke repo sendiri malah ke fork :cry:

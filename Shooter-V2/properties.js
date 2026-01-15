@@ -25,6 +25,11 @@ export const pointerProperties = {
     y: 2000,
 }
 
+export const effectsProperties = {
+    distance: 50,
+    timeout: 30
+}
+
 const boomImage = new Image()
 boomImage.src = "./sprites/boom.png"
 export { boomImage }
